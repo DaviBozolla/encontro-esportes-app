@@ -11,7 +11,7 @@ ESPORTES: Qualquer esporte pode ser abrangido. O aplicativo inicialmente contar�
 
 PERFIL: Para utilizar o aplicativo, é necessário criar um perfil. O perfil deve conter informações importantes para o público conhecer o usuário, como:
     1. Nome
-    2. Idade
+    2. Data de nascimento
     3. Gênero - opção de não informar
     4. Localização (cidade, estado)
     5. Esportes que pratica (há quanto tempo, nível de habilidade)
@@ -40,28 +40,30 @@ REQUISITOS
 
     US004 - Buscar perfil: Como usuário, quero poder buscar perfis de outros usuários com filtros combináveis para expandir minha rede de contatos.
 
+    US005 - Ver perfil: Como usuário, quero poder ver perfis de outros usuários para conhecê-los melhor.
+
 ÉPICO 02 - Conexões:
 
-    US005 - Seguir perfil: Como usuário, quero poder seguir perfis de outros usuários para conseguir ver as partidas que eles estão criando.
+    US006 - Seguir perfil: Como usuário, quero poder seguir perfis de outros usuários para conseguir ver as partidas que eles estão criando.
 
-    US006 - Deixar de seguir: Como usuário, quero poder deixar de seguir perfis de outros usuários para encerrar meu contato com eles.
+    US007 - Deixar de seguir: Como usuário, quero poder deixar de seguir perfis de outros usuários para encerrar meu contato com eles.
 
-    US007 - Excluir seguidor: Como usuário, quero poder excluir meus seguidores para encerrar conexões com outros perfis.
+    US008 - Excluir seguidor: Como usuário, quero poder excluir meus seguidores para encerrar conexões com outros perfis.
     
-    US008 - Ver seguidores e seguindo: Como usuário, quero poder visualizar os seguidores e seguindo dos outros perfis para conhecer mais sobre eles e encontrar
-            possíveis conexões em comum.
+    US009 - Ver seguidores e seguindo: Como usuário, quero poder visualizar os seguidores e seguindo do meu perfil e dos outros perfis para conhecer 
+    mais sobre eles e encontrar possíveis conexões em comum.
 
 ÉPICO 03 - Partidas:
 
-    US009 - Criar partida: Como usuário, quero poder criar partidas de esportes para formar times para jogar.
+    US010 - Criar partida: Como usuário, quero poder criar partidas de esportes para formar times para jogar.
 
-    US010 - Cancelar partida: Como usuário criador de partida, quero poder cancelar a partida que criei para caso ela não faça mais sentido.
+    US011 - Cancelar partida: Como usuário criador de partida, quero poder cancelar a partida que criei para caso ela não faça mais sentido.
 
-    US011 - Ver partidas: Como usuário, quero poder ver partidas na página inicial para decidir em qual entrar.
+    US012 - Ver partidas: Como usuário, quero poder ver partidas na página inicial para decidir em qual entrar.
 
-    US012 - Entrar em partida: Como usuário, quero poder entrar em partidas criadas por perfis para jogar. 
+    US013 - Entrar em partida: Como usuário, quero poder entrar em partidas criadas por perfis para jogar. 
 
-    US013 - Sair de partida: Como usuário, quero poder sair de partidas que eu entrei para caso eu não possa mais ir jogar.
+    US014 - Sair de partida: Como usuário, quero poder sair de partidas que eu entrei para caso eu não possa mais ir jogar.
 
     
     
