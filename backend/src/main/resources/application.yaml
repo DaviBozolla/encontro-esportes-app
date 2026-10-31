@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: encontro-esportes
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/encontro_esportes
+    username: root
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
