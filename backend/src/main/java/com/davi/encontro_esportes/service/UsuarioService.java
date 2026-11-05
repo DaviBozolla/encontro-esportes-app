@@ -1,10 +1,10 @@
 package com.davi.encontro_esportes.service;
 
+import com.davi.encontro_esportes.dto.AtualizarUsuarioRequest;
 import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.entity.UsuarioEntity;
 import com.davi.encontro_esportes.repository.UsuarioRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,23 +29,26 @@ public class UsuarioService {
         usuario.setSenha(request.senha());
         usuario.setGenero(request.genero());
 
-        UsuarioEntity usuarioSalvo = usuarioRepository.save(usuario);
-
-        return UsuarioResponse.de(usuarioSalvo);
+        return UsuarioResponse.de(usuarioRepository.save(usuario));
     }
 
-    public UsuarioEntity atualizar(UsuarioEntity usuario) {
-        UsuarioEntity usuarioAntigo = usuarioRepository.findById(usuario.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+    public UsuarioResponse buscarPorId(Long id) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
-        usuarioAntigo.setNome(usuario.getNome());
-        usuarioAntigo.setGenero(usuario.getGenero());
-        usuarioAntigo.setDataNascimento(usuario.getDataNascimento());
-        usuarioAntigo.setEmail(usuario.getEmail());
-        usuarioAntigo.setLocalizacao(usuario.getLocalizacao());
-        usuarioAntigo.setSenha(usuario.getSenha());
+        return UsuarioResponse.de(usuario);
+    }
 
-        return usuarioRepository.save(usuarioAntigo);
+    public UsuarioResponse atualizar(Long id, AtualizarUsuarioRequest request) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        usuario.setNome(request.nome());
+        usuario.setDataNascimento(request.dataNascimento());
+        usuario.setLocalizacao(request.localizacao());
+        usuario.setGenero(request.genero());
+
+        return UsuarioResponse.de(usuarioRepository.save(usuario));
     }
 
     public void remover(Long id) {

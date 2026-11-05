@@ -1,8 +1,8 @@
 package com.davi.encontro_esportes.controller;
 
+import com.davi.encontro_esportes.dto.AtualizarUsuarioRequest;
 import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
-import com.davi.encontro_esportes.entity.UsuarioEntity;
 import com.davi.encontro_esportes.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +25,18 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UsuarioEntity> atualizar(@RequestBody UsuarioEntity usuario, @PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Long id) {
+        UsuarioResponse usuarioEncontrado = usuarioService.buscarPorId(id);
 
-        UsuarioEntity usuarioAtualizado = usuarioService.atualizar(usuario);
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioEncontrado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioResponse> atualizar(@PathVariable Long id,
+                                                     @Valid @RequestBody AtualizarUsuarioRequest usuario) {
+
+        UsuarioResponse usuarioAtualizado = usuarioService.atualizar(id, usuario);
 
         return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);
     }
