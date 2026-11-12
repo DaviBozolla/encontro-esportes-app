@@ -3,12 +3,17 @@ package com.davi.encontro_esportes.service;
 import com.davi.encontro_esportes.dto.AtualizarUsuarioRequest;
 import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
+import com.davi.encontro_esportes.entity.Genero;
 import com.davi.encontro_esportes.entity.UsuarioEntity;
 import com.davi.encontro_esportes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,5 +63,39 @@ public class UsuarioService {
         }
 
         usuarioRepository.deleteById(id);
+    }
+
+    public List<UsuarioResponse> buscar(String nome,
+                                        Genero genero,
+                                        String localizacao,
+                                        Integer idadeMin,
+                                        Integer idadeMax,
+                                        Long usuarioId) {
+
+        if (idadeMin != null && idadeMax != null && idadeMin > idadeMax) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A idade mínima não pode ser " +
+                    "maior que a idade máxima");
+        }
+
+        LocalDate nascidoDepois = null; // idade maxima
+        LocalDate nascidoAte = null; // idade minima
+
+        if (idadeMin != null) {
+            nascidoAte = LocalDate.now().minusYears(idadeMin);
+        }
+        if (idadeMax != null) {
+            nascidoDepois = LocalDate.now().minusYears(idadeMax + 1);
+        }
+
+        List<UsuarioEntity> usuarios = usuarioRepository.buscar(nome, genero, nascidoAte, nascidoDepois,
+                localizacao, usuarioId);
+
+        List<UsuarioResponse> usuariosEncontrados = new ArrayList<UsuarioResponse>();
+
+        for (UsuarioEntity usuario : usuarios) {
+            usuariosEncontrados.add(UsuarioResponse.de(usuario));
+        }
+
+        return usuariosEncontrados;
     }
 }

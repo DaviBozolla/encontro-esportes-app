@@ -3,12 +3,15 @@ package com.davi.encontro_esportes.controller;
 import com.davi.encontro_esportes.dto.AtualizarUsuarioRequest;
 import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
+import com.davi.encontro_esportes.entity.Genero;
 import com.davi.encontro_esportes.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -49,4 +52,17 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping
+    public ResponseEntity<List<UsuarioResponse>> buscar(@RequestParam(required = false) String nome,
+                                                        @RequestParam(required = false) Genero genero,
+                                                        @RequestParam(required = false) String localizacao,
+                                                        @RequestParam(required = false) Integer idadeMin,
+                                                        @RequestParam(required = false) Integer idadeMax,
+                                                        @RequestParam(required = false) Long usuarioId
+                                                        ){
+        List<UsuarioResponse> usuariosEncontrados = usuarioService.buscar(nome, genero, localizacao, idadeMin,
+                idadeMax, usuarioId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(usuariosEncontrados);
+    }
 }
