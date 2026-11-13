@@ -5,10 +5,12 @@ import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.entity.Genero;
 import com.davi.encontro_esportes.entity.UsuarioEntity;
+import com.davi.encontro_esportes.repository.ConexaoRepository;
 import com.davi.encontro_esportes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final ConexaoRepository conexaoRepository;
 
     public UsuarioResponse cadastrar(CadastroUsuarioRequest request) {
         if (usuarioRepository.existsByEmail(request.email())) {
@@ -56,12 +59,13 @@ public class UsuarioService {
         return UsuarioResponse.de(usuarioRepository.save(usuario));
     }
 
+    @Transactional
     public void remover(Long id) {
 
         if (!usuarioRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-
+        conexaoRepository.deleteBySeguidorIdOrSeguidoId(id, id);
         usuarioRepository.deleteById(id);
     }
 
