@@ -58,10 +58,11 @@ public class UsuarioController {
                                                         @RequestParam(required = false) String localizacao,
                                                         @RequestParam(required = false) Integer idadeMin,
                                                         @RequestParam(required = false) Integer idadeMax,
-                                                        @RequestParam(required = false) Long usuarioId
+                                                        @RequestParam(required = false) Long usuarioId,
+                                                        @RequestParam(required = false) Long esporteId
                                                         ){
         List<UsuarioResponse> usuariosEncontrados = usuarioService.buscar(nome, genero, localizacao, idadeMin,
-                idadeMax, usuarioId);
+                idadeMax, usuarioId, esporteId);
 
         return ResponseEntity.status(HttpStatus.OK).body(usuariosEncontrados);
     }

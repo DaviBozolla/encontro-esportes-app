@@ -20,12 +20,16 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
                                   AND (:nascidoAte IS NULL OR u.dataNascimento <= :nascidoAte)
                                   AND (:nascidoDepois IS NULL OR u.dataNascimento > :nascidoDepois)
                                   AND (:localizacao IS NULL OR LOWER(u.localizacao) LIKE LOWER(CONCAT('%', :localizacao, '%')))
-                                  AND (:usuarioId IS NULL OR :usuarioId <> u.id)\s
+                                  AND (:usuarioId IS NULL OR :usuarioId <> u.id)
+                                  AND (:esporteId IS NULL OR EXISTS (
+                                              SELECT ue FROM UsuarioEsporteEntity ue 
+                                              WHERE ue.usuario = u AND ue.esporte.id = :esporteId))
             """)
     List<UsuarioEntity> buscar(@Param("nome") String nome,
                                @Param("genero") Genero genero,
                                @Param("nascidoAte") LocalDate idadeMin,
                                @Param("nascidoDepois") LocalDate idadeMax,
                                @Param("localizacao") String localizacao,
-                               @Param("usuarioId") Long usuarioId);
+                               @Param("usuarioId") Long usuarioId,
+                               @Param("esporteId") Long esporteId);
 }

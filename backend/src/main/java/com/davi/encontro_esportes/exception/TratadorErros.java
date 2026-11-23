@@ -1,6 +1,7 @@
 package com.davi.encontro_esportes.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,6 +36,13 @@ public class TratadorErros {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, String>> tratarInput(MethodArgumentTypeMismatchException ex) {
         Map<String, String> erro = Map.of("erro", "Valor inválido para o parâmetro '" + ex.getName() + "'");
+
+        return ResponseEntity.badRequest().body(erro);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> tratarJsonInvalido(HttpMessageNotReadableException ex) {
+        Map<String, String> erro = Map.of("erro", "Corpo da requisição inválido");
 
         return ResponseEntity.badRequest().body(erro);
     }

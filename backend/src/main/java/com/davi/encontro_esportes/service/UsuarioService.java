@@ -6,6 +6,7 @@ import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.entity.Genero;
 import com.davi.encontro_esportes.entity.UsuarioEntity;
 import com.davi.encontro_esportes.repository.ConexaoRepository;
+import com.davi.encontro_esportes.repository.UsuarioEsporteRepository;
 import com.davi.encontro_esportes.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final ConexaoRepository conexaoRepository;
+    private final UsuarioEsporteRepository usuarioEsporteRepository;
 
     public UsuarioResponse cadastrar(CadastroUsuarioRequest request) {
         if (usuarioRepository.existsByEmail(request.email())) {
@@ -66,7 +68,9 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
         conexaoRepository.deleteBySeguidorIdOrSeguidoId(id, id);
+        usuarioEsporteRepository.deleteByUsuarioId(id);
         usuarioRepository.deleteById(id);
+
     }
 
     public List<UsuarioResponse> buscar(String nome,
@@ -74,7 +78,8 @@ public class UsuarioService {
                                         String localizacao,
                                         Integer idadeMin,
                                         Integer idadeMax,
-                                        Long usuarioId) {
+                                        Long usuarioId,
+                                        Long esporteId) {
 
         if (idadeMin != null && idadeMax != null && idadeMin > idadeMax) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A idade mínima não pode ser " +
@@ -92,7 +97,7 @@ public class UsuarioService {
         }
 
         List<UsuarioEntity> usuarios = usuarioRepository.buscar(nome, genero, nascidoAte, nascidoDepois,
-                localizacao, usuarioId);
+                localizacao, usuarioId, esporteId);
 
         List<UsuarioResponse> usuariosEncontrados = new ArrayList<UsuarioResponse>();
 
