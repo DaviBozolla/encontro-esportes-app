@@ -9,7 +9,7 @@
 
 ## 💡 Motivação
 
-Para uma partida completa de futebol são necessárias 12 pessoas — e reunir todo esse pessoal costuma ser a parte mais difícil. Durante a graduação, eu e meus colegas vivíamos tentando fechar time, e quase sempre faltava gente.
+Para uma partida completa de futebol são necessárias 12 pessoas - e reunir todo esse pessoal costuma ser a parte mais difícil. Durante a graduação, eu e meus colegas vivíamos tentando fechar time, e quase sempre faltava gente.
 
 O **Encontro Esportes** nasceu desse problema: um app onde as pessoas montam um perfil com os esportes que praticam, seguem outros jogadores e criam ou entram em partidas com vagas limitadas.
 
