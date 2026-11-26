@@ -4,10 +4,9 @@ import com.davi.encontro_esportes.dto.AtualizarUsuarioRequest;
 import com.davi.encontro_esportes.dto.CadastroUsuarioRequest;
 import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.entity.Genero;
+import com.davi.encontro_esportes.entity.PartidaEntity;
 import com.davi.encontro_esportes.entity.UsuarioEntity;
-import com.davi.encontro_esportes.repository.ConexaoRepository;
-import com.davi.encontro_esportes.repository.UsuarioEsporteRepository;
-import com.davi.encontro_esportes.repository.UsuarioRepository;
+import com.davi.encontro_esportes.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,8 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final ConexaoRepository conexaoRepository;
     private final UsuarioEsporteRepository usuarioEsporteRepository;
+    private final PartidaRepository partidaRepository;
+    private final ParticipacaoRepository participacaoRepository;
 
     public UsuarioResponse cadastrar(CadastroUsuarioRequest request) {
         if (usuarioRepository.existsByEmail(request.email())) {
@@ -62,14 +63,22 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void remover(Long id) {
-
-        if (!usuarioRepository.existsById(id)) {
+    public void remover(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
         }
-        conexaoRepository.deleteBySeguidorIdOrSeguidoId(id, id);
-        usuarioEsporteRepository.deleteByUsuarioId(id);
-        usuarioRepository.deleteById(id);
+
+        List<PartidaEntity> partidasCriadas = partidaRepository.findByCriadorId(usuarioId);
+        for (PartidaEntity partida : partidasCriadas) {
+            participacaoRepository.deleteByPartidaId(partida.getId());
+            partidaRepository.delete(partida);
+        }
+
+        participacaoRepository.deleteByUsuarioId(usuarioId);
+
+        conexaoRepository.deleteBySeguidorIdOrSeguidoId(usuarioId, usuarioId);
+        usuarioEsporteRepository.deleteByUsuarioId(usuarioId);
+        usuarioRepository.deleteById(usuarioId);
 
     }
 
@@ -107,4 +116,6 @@ public class UsuarioService {
 
         return usuariosEncontrados;
     }
+
+
 }

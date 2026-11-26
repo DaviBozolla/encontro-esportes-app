@@ -12,7 +12,7 @@ public record CriarPartidaRequest(
         String local,
 
         @NotNull(message = "A data e horário são obrigatórios")
-        @Future(message = "A partida deve ser marcadao para uma data futura")
+        @Future(message = "A partida deve ser marcada para uma data futura")
         LocalDateTime dataHora,
 
         @NotNull(message = "O máximo de participantes é obrigatório")

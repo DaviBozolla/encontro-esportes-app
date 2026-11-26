@@ -2,12 +2,15 @@ package com.davi.encontro_esportes.controller;
 
 import com.davi.encontro_esportes.dto.CriarPartidaRequest;
 import com.davi.encontro_esportes.dto.PartidaResponse;
+import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.service.PartidaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +41,23 @@ public class PartidaController {
     public ResponseEntity<Void> sairPartida(@PathVariable Long usuarioId, @PathVariable Long partidaId) {
         partidaService.sair(usuarioId, partidaId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/partidas/{partidaId}/participantes")
+    public ResponseEntity<List<UsuarioResponse>> listarParticipantes(@PathVariable Long partidaId) {
+        List<UsuarioResponse> participantes = partidaService.listarParticipantes(partidaId);
+        return ResponseEntity.status(HttpStatus.OK).body(participantes);
+    }
+
+    @GetMapping("/usuarios/{usuarioId}/partidas")
+    public ResponseEntity<List<PartidaResponse>> minhasPartidas(@PathVariable Long usuarioId) {
+        List<PartidaResponse> partidas = partidaService.minhasPartidas(usuarioId);
+        return ResponseEntity.status(HttpStatus.OK).body(partidas);
+    }
+
+    @GetMapping("/usuarios/{usuarioId}/feed")
+    public ResponseEntity<List<PartidaResponse>> feed(@PathVariable Long usuarioId) {
+        List<PartidaResponse> partidas = partidaService.feed(usuarioId);
+        return ResponseEntity.status(HttpStatus.OK).body(partidas);
     }
 }

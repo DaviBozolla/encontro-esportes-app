@@ -2,6 +2,7 @@ package com.davi.encontro_esportes.service;
 
 import com.davi.encontro_esportes.dto.CriarPartidaRequest;
 import com.davi.encontro_esportes.dto.PartidaResponse;
+import com.davi.encontro_esportes.dto.UsuarioResponse;
 import com.davi.encontro_esportes.entity.EsporteEntity;
 import com.davi.encontro_esportes.entity.ParticipacaoEntity;
 import com.davi.encontro_esportes.entity.PartidaEntity;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +92,7 @@ public class PartidaService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Partida não encontrada."));
 
         if (usuarioId.equals(partida.getCriador().getId())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O criador não pode cancelar a partida.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O criador não pode sair da partida. Se não puder ir, cancele-a.");
         }
 
         participacaoRepository.delete(participacao);
@@ -106,5 +109,52 @@ public class PartidaService {
 
         participacaoRepository.deleteByPartidaId(partidaId);
         partidaRepository.delete(partida);
+    }
+
+    public List<UsuarioResponse> listarParticipantes(Long partidaId) {
+        if (!partidaRepository.existsById(partidaId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partida não encontrada.");
+        }
+
+        List<ParticipacaoEntity> participacoes = participacaoRepository.findByPartidaId(partidaId);
+        List<UsuarioResponse> participantes = new ArrayList<UsuarioResponse>();
+
+        for (ParticipacaoEntity participacao : participacoes) {
+            UsuarioEntity usuario = participacao.getUsuario();
+            participantes.add(UsuarioResponse.de(usuario));
+        }
+
+        return participantes;
+    }
+
+    public List<PartidaResponse> minhasPartidas(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+
+        List<ParticipacaoEntity> participacoes = participacaoRepository.findByUsuarioIdAndPartidaDataHoraAfterOrderByPartidaDataHoraAsc(usuarioId, LocalDateTime.now());
+        List<PartidaResponse> partidas = new ArrayList<PartidaResponse>();
+
+        for (ParticipacaoEntity participacao : participacoes) {
+            PartidaEntity partida = participacao.getPartida();
+            partidas.add(PartidaResponse.de(partida, participacaoRepository.countByPartidaId(partida.getId())));
+        }
+
+        return partidas;
+    }
+
+    public List<PartidaResponse> feed(Long usuarioId) {
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado");
+        }
+
+        List<PartidaEntity> partidas = partidaRepository.buscarFeed(usuarioId, LocalDateTime.now());
+        List<PartidaResponse> response = new ArrayList<PartidaResponse>();
+
+        for (PartidaEntity partida : partidas) {
+            response.add(PartidaResponse.de(partida, participacaoRepository.countByPartidaId(partida.getId())));
+        }
+
+        return response;
     }
 }
