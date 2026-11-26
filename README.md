@@ -15,7 +15,7 @@ O **Encontro Esportes** nasceu desse problema: um app onde as pessoas montam um 
 
 ## 🚧 Status do projeto
 
-O **backend** está em desenvolvimento ativo. Os módulos de **perfil, busca, conexões e esportes** estão completos, e o módulo de **partidas** está na metade. O front-end, a conteinerização e o deploy fazem parte do [roadmap](#-roadmap).
+O **backend está concluído**: os módulos de **perfil, busca, conexões, esportes e partidas** estão implementados e cobrem todas as histórias de usuário do [`PLANEJAMENTO.md`](PLANEJAMENTO.md). O front-end, a conteinerização, o deploy e a autenticação estão em andamento (ver [roadmap](#-roadmap)).
 
 ## 🛠️ Tecnologias
 
@@ -49,9 +49,9 @@ O **backend** está em desenvolvimento ativo. Os módulos de **perfil, busca, co
 - [x] Entrar em partida com controle de vagas (sem inscrição duplicada e sem partidas que já aconteceram)
 - [x] Sair de partida (o criador não pode sair)
 - [x] Cancelar partida (apenas o criador)
-- [ ] Listar minhas partidas
-- [ ] Página inicial com as partidas de quem eu sigo
-- [ ] Lista de inscritos de uma partida
+- [x] Listar minhas próximas partidas (inclui as que criei), ordenadas por data
+- [x] Página inicial com as próximas partidas criadas por quem eu sigo
+- [x] Lista de inscritos de uma partida
 
 ## 🗂️ Modelo de dados
 
@@ -120,7 +120,7 @@ As tabelas `conexoes`, `usuario_esportes` e `participacoes` são **entidades de 
 | `POST` | `/usuarios` | Cadastrar usuário | `201` |
 | `GET` | `/usuarios/{id}` | Ver perfil | `200` |
 | `PUT` | `/usuarios/{id}` | Atualizar perfil | `200` |
-| `DELETE` | `/usuarios/{id}` | Excluir conta (remove também conexões e esportes) | `204` |
+| `DELETE` | `/usuarios/{id}` | Excluir conta (remove também conexões, esportes, inscrições e as partidas criadas) | `204` |
 | `GET` | `/usuarios?nome=&genero=&idadeMin=&idadeMax=&localizacao=&esporteId=&usuarioId=` | Buscar usuários (todos os filtros são opcionais) | `200` |
 
 **Conexões**
@@ -150,6 +150,9 @@ As tabelas `conexoes`, `usuario_esportes` e `participacoes` são **entidades de 
 | `DELETE` | `/usuarios/{usuarioId}/partidas/{partidaId}` | Cancelar partida (só o criador) | `204` |
 | `POST` | `/partidas/{partidaId}/participantes/{usuarioId}` | Entrar em partida | `201` |
 | `DELETE` | `/partidas/{partidaId}/participantes/{usuarioId}` | Sair de partida | `204` |
+| `GET` | `/partidas/{partidaId}/participantes` | Listar inscritos da partida | `200` |
+| `GET` | `/usuarios/{usuarioId}/partidas` | Minhas próximas partidas | `200` |
+| `GET` | `/usuarios/{usuarioId}/feed` | Página inicial: próximas partidas de quem eu sigo | `200` |
 
 > ℹ️ Por enquanto o usuário que executa a ação é identificado pelo `usuarioId` na URL. Com a implementação do Spring Security (ver [roadmap](#-roadmap)), ele passará a ser identificado pelo login.
 
@@ -199,7 +202,7 @@ Content-Type: application/json
 - **DTOs com `record`**: as entidades nunca são expostas diretamente. Isso impede, por exemplo, que a senha apareça em alguma resposta, e permite ter DTOs diferentes para cadastro e atualização (o e-mail e a senha não são alterados pelo `PUT`).
 - **Tratamento global de erros** com `@RestControllerAdvice`: validação, regras de negócio, parâmetros com tipo inválido e JSON malformado sempre retornam um JSON limpo e com o status HTTP correto, sem expor stack traces.
 - **Status HTTP semânticos**: `201` ao criar, `204` ao remover, `400` para dados inválidos, `403` para falta de permissão, `404` para recurso inexistente e `409` para conflitos (e-mail já cadastrado, inscrição duplicada, partida lotada).
-- **Busca com filtros opcionais em uma única consulta JPQL**, usando o padrão `(:filtro IS NULL OR ...)`. O filtro por esporte usa `EXISTS` em vez de `JOIN`, para que um usuário com vários esportes não apareça repetido.
+- **Busca com filtros opcionais em uma única consulta JPQL**, usando o padrão `(:filtro IS NULL OR ...)`. O filtro por esporte usa `EXISTS` em vez de `JOIN`, para que um usuário com vários esportes não apareça repetido. A mesma técnica monta a página inicial (partidas cujo criador é seguido pelo usuário).
 - **Integridade dos dados em duas camadas**: o service verifica as regras e retorna erros amigáveis, e o banco garante as mesmas regras com `UNIQUE` e chaves estrangeiras.
 - **`@Transactional` em operações com várias escritas** (excluir conta, criar e cancelar partida): ou todas as alterações acontecem, ou nenhuma.
 
@@ -226,7 +229,7 @@ Content-Type: application/json
 - [x] Busca com filtros
 - [x] Conexões entre usuários
 - [x] Esportes do perfil
-- [ ] Partidas (em andamento)
+- [x] Partidas
 - [ ] Front-end responsivo (HTML, CSS e JavaScript)
 - [ ] Conteinerização com Docker e Docker Compose
 - [ ] Deploy
