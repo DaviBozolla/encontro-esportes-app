@@ -3,12 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="compartilhado/base.css">
     <title>Encontro Esportes</title>
 </head>
 <body>
-    <h1>Encontro Esportes</h1>
-    <ul id="lista-usuarios"></ul>
+    <main class="container">
+        <h1>Encontro Esportes</h1>
+        <ul id="lista-usuarios" class="lista"></ul>
 
+        <h2>Criar Conta</h2>
+        <form id="form-cadastro" class="card formulario" novalidate>
+            <label>Nome
+                <input type="text" name="nome">
+                <small class="erro" id="erro-nome"></small>
+            </label>
+            <label>Data Nascimento
+                <input type="date" name="dataNascimento">
+                <small class="erro" id="erro-dataNascimento"></small>
+            </label>
+            <label>Localização
+                <input type="text" name="localizacao" placeholder="Ex: Maringá - PR, Florianópolis - SC">
+                <small class="erro" id="erro-localizacao"></small>
+            </label>
+            <label>E-mail
+                <input type="email" name="email">
+                <small class="erro" id="erro-email"></small>
+            </label>
+            <label>Senha
+                <input type="password" name="senha">
+                <small class="erro" id="erro-senha"></small>
+            </label>
+            <label>Gênero
+                <select name="genero">
+                    <option value="">Prefiro não informar</option>
+                    <option value="MASCULINO">Masculino</option>
+                    <option value="FEMININO">Feminino</option>
+                    <option value="OUTRO">Outro</option>
+                </select>
+            </label>
+
+            <p id="erro-geral" class="erro"></p> 
+            <button type="submit">Cadastrar</button>
+        </form>
+    </main>
+    
     <script src="compartilhado/sessao.js"></script>
     <script src="index.js"></script>
 </body>
