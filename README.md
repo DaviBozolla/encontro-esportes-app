@@ -1,11 +1,14 @@
 # ⚽ Encontro Esportes
 
-> API REST para encontrar parceiros e fechar times para praticar esportes.
+> Aplicação web full stack (API REST + front-end) para encontrar parceiros e fechar times para praticar esportes.
 
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1-brightgreen)
 ![MySQL](https://img.shields.io/badge/MySQL-8.4-blue)
+![JavaScript](https://img.shields.io/badge/JavaScript-puro-F7DF1E?logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 
 ## 💡 Motivação
 
@@ -15,17 +18,48 @@ O **Encontro Esportes** nasceu desse problema: um app onde as pessoas montam um 
 
 ## 🚧 Status do projeto
 
-O **backend está concluído**: os módulos de **perfil, busca, conexões, esportes e partidas** estão implementados e cobrem todas as histórias de usuário do [`PLANEJAMENTO.md`](PLANEJAMENTO.md). O front-end, a conteinerização, o deploy e a autenticação estão em andamento (ver [roadmap](#-roadmap)).
+- ✅ **Backend concluído:** os módulos de **perfil, busca, conexões, esportes e partidas** estão implementados e cobrem todas as histórias de usuário do [`PLANEJAMENTO.md`](PLANEJAMENTO.md).
+- 🚧 **Front-end em desenvolvimento:** já é possível criar uma conta, entrar como um usuário e acessar a página inicial. As telas de perfil, busca e partidas são as próximas.
+- 🗓️ **Próximas etapas:** conteinerização, deploy, CI/CD e autenticação (ver [roadmap](#-roadmap)).
 
 ## 🛠️ Tecnologias
 
+**Backend**
 - **Java 21**
 - **Spring Boot 4.1** (Spring Web MVC, Spring Data JPA, Bean Validation)
 - **Hibernate** (ORM)
 - **MySQL 8.4**
 - **Lombok**
 - **Maven**
+
+**Front-end**
+- **HTML5** e **CSS3** (variáveis CSS, Flexbox, layout responsivo)
+- **JavaScript puro**, sem frameworks (Fetch API, manipulação do DOM, `localStorage`)
+
+**Ferramentas**
 - **Postman** (testes manuais da API)
+- **VS Code** com **Live Server** (desenvolvimento do front-end)
+- **Git** e **GitHub**
+
+## 📁 Estrutura do projeto
+
+```
+encontro-esportes-app/
+├── backend/                  API REST em Spring Boot
+│   └── src/main/java/com/davi/encontro_esportes/
+│       ├── config/           configuração de CORS
+│       ├── controller/       recebe as requisições HTTP
+│       ├── service/          regras de negócio
+│       ├── repository/       acesso ao banco (Spring Data JPA)
+│       ├── entity/           tabelas do banco
+│       ├── dto/              formatos de entrada e saída da API
+│       └── exception/        tratamento global de erros
+├── frontend/                 front-end em HTML, CSS e JavaScript
+│   ├── compartilhado/        estilos e scripts usados por todas as telas
+│   └── *.html / *.css / *.js uma trinca de arquivos por tela
+├── PLANEJAMENTO.md           épicos e histórias de usuário
+└── README.md
+```
 
 ## ✅ Funcionalidades
 
@@ -52,6 +86,18 @@ O **backend está concluído**: os módulos de **perfil, busca, conexões, espor
 - [x] Listar minhas próximas partidas (inclui as que criei), ordenadas por data
 - [x] Página inicial com as próximas partidas criadas por quem eu sigo
 - [x] Lista de inscritos de uma partida
+
+**Front-end** (em desenvolvimento)
+- [x] Lista de usuários com opção de entrar como um deles (sessão temporária até a autenticação)
+- [x] Cadastro de usuário com as mensagens de erro da API exibidas abaixo de cada campo
+- [x] Página inicial protegida (redireciona quem não entrou) com opção de sair
+- [x] Visual base responsivo, com cores centralizadas em variáveis CSS
+- [ ] Perfil (ver, editar, excluir e gerenciar esportes)
+- [ ] Busca de usuários com filtros
+- [ ] Seguir usuários e ver seguidores
+- [ ] Página inicial com as partidas de quem eu sigo
+- [ ] Criar partida, ver detalhes, entrar, sair e cancelar
+- [ ] Minhas partidas
 
 ## 🗂️ Modelo de dados
 
@@ -205,10 +251,15 @@ Content-Type: application/json
 - **Busca com filtros opcionais em uma única consulta JPQL**, usando o padrão `(:filtro IS NULL OR ...)`. O filtro por esporte usa `EXISTS` em vez de `JOIN`, para que um usuário com vários esportes não apareça repetido. A mesma técnica monta a página inicial (partidas cujo criador é seguido pelo usuário).
 - **Integridade dos dados em duas camadas**: o service verifica as regras e retorna erros amigáveis, e o banco garante as mesmas regras com `UNIQUE` e chaves estrangeiras.
 - **`@Transactional` em operações com várias escritas** (excluir conta, criar e cancelar partida): ou todas as alterações acontecem, ou nenhuma.
+- **CORS configurado com uma lista de origens permitidas**: a API aceita requisições do front-end e recusa as de outros sites.
+- **Front-end sem frameworks**: HTML, CSS e JavaScript puros, para dominar os fundamentos (requisições HTTP com `fetch`, manipulação do DOM e eventos) antes de adotar uma biblioteca.
+- **Uma única fonte para as regras de validação**: o formulário desativa a validação do navegador (`novalidate`) e exibe as mensagens que vêm da API, campo a campo. Assim as regras ficam só no backend e não precisam ser mantidas em dois lugares.
 
 ## ▶️ Como rodar
 
-**Pré-requisitos:** Java 21 e MySQL 8.
+**Pré-requisitos:** Java 21, MySQL 8 e um editor com servidor local para o front-end (por exemplo, VS Code com a extensão Live Server).
+
+### Backend
 
 1. Crie o banco de dados:
    ```sql
@@ -222,6 +273,12 @@ Content-Type: application/json
    No Windows: `mvnw.cmd spring-boot:run`
 4. A API estará disponível em `http://localhost:8080`. As tabelas são criadas automaticamente e o catálogo de esportes é carregado pelo `data.sql`.
 
+### Front-end
+
+1. Com o backend rodando, abra a pasta `frontend` no VS Code.
+2. Abra o `index.html` com o **Live Server** (botão "Go Live").
+3. O app abrirá em `http://localhost:5500`, que é uma das origens liberadas no CORS da API.
+
 ## 🗺️ Roadmap
 
 - [x] Planejamento (épicos e histórias de usuário com critérios de aceitação — ver [`PLANEJAMENTO.md`](PLANEJAMENTO.md))
@@ -230,7 +287,7 @@ Content-Type: application/json
 - [x] Conexões entre usuários
 - [x] Esportes do perfil
 - [x] Partidas
-- [ ] Front-end responsivo (HTML, CSS e JavaScript)
+- [ ] Front-end responsivo em HTML, CSS e JavaScript (em andamento)
 - [ ] Conteinerização com Docker e Docker Compose
 - [ ] Deploy
 - [ ] CI/CD com GitHub Actions (testes automatizados e deploy contínuo)
